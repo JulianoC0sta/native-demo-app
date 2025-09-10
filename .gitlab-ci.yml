@@ -1,0 +1,23 @@
+stages:
+  - test
+
+image: node:18
+
+before_script:
+  - apt-get update && apt-get install -y openjdk-11-jdk android-sdk unzip
+  - npm install -g appium
+  - npm install
+  - npm install -g allure-commandline --save-dev
+  - npm install --save-dev @wdio/allure-reporter
+  - appium &> /dev/null &
+
+test_e2e_mobile:
+  stage: test
+  script:
+    - npm run test
+    - npm run allure:generate
+  artifacts:
+    when: always
+    paths:
+      - allure-report
+    expire_in: 1 week
